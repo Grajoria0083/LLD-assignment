@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+
+</html>
+<script>
+
+    class seat {
+        constructor(type, regnumber, size) {
+            this._type = type;
+            this._regnumber = regnumber;
+            this._size = size;
+        }
+        get type() {
+            return this._type;
+        }
+        set type(value) {
+            this._type = value;
+        }
+    }
+
+    class VVIPs extends seat {
+        constructor(regnumber, size) {
+            super("VVIPs", regnumber, size);
+        }
+    }
+
+    class VIPs extends VVIPs {
+        constructor(regnumber, size) {
+            super("VIPs", regnumber, size);
+        }
+    }
+
+    class General extends VIPs {
+        constructor(regnumber, size) {
+            super("VIPs", regnumber, size);
+        }
+    }
+
+
+    // let c1 = new VVIPs("MH 12-1234", "Black")
+    // console.log("c1:", c1)
+
+
+
+
+    class slot {
+        constructor(type, number) {
+            this.number = number;
+            this.type = type;
+            this._isBooked = false;
+        }
+
+        get isBooked() {
+            return this._isBooked;
+        }
+        set isBooked(value) {
+            this._isBooked = value;
+        }
+    }
+
+
+    class sittingFloor {
+        constructor(floornumber, maxFloor) {
+            this.floornumber = floornumber;
+            this._sittingspots = [];
+
+            for (let i = 0; i < maxFloor; i++) {
+                if (i === 0)
+                    this._sittingspots.push(new slot("VIPs", i))
+
+                else if (i === 1)
+                    this._sittingspots.push(new slot("VVIPs", i))
+
+                else
+                    this._sittingspots.push(new slot("General", i))
+            }
+        }
+
+        get sittingspots() {
+            return this._sittingspots;
+        }
+    }
+
+    // let pf1 = new sittingFloor(0, 3)
+    // console.log(pf1)
+
+    class sittingLot {
+        constructor(Number) {
+
+            this._floors = [];
+            this._numberofFloor = Number;
+
+            for (var i = 0; i < Number; i++) {
+                this.floors[i] = new sittingFloor(i, Number)
+            }
+        }
+        get floors() {
+            return this._floors;
+        }
+        get numberofFloor() {
+            return this._numberofFloor;
+        }
+        set floors(value) {
+            this._floors = value;
+        }
+
+
+        parkseat(seat) {
+            let slot = this.findSlot(seat.type); //VVIPs, VIPs, General
+
+            if (!slot) {
+                console.log("No slots");
+                return false;
+            }
+
+            this.bookslot(slot);
+
+            let ticket = new Ticket("23", "male", slot.slot.type);
+            console.log("ticket is issued:", ticket);
+        }
+
+
+
+        findSlot(type) {
+
+            for (let i = 0; i < this._numberofFloor; i++) {
+                for (let slot of this._floors[i]._sittingspots) {
+                    if (slot.type === type && !slot._isBooked) {
+                        // console.log("slot:", slot)
+                        return { floornumber: i, slot: slot }
+                    }
+                }
+            }
+            return false;
+        }
+        bookslot(slot) {
+            slot.slot.isBooked = true;
+            console.log("slot is booked:", slot);
+
+            return true;
+        }
+    }
+
+    class Ticket {
+        constructor(age, gender, category) {
+            this.age = age;
+            this.gender = gender;
+            this.category = category;
+        }
+    }
+
+    let pl = new sittingLot(3)
+    console.log("p1 : ", pl)
+
+    let b1 = new VIPs("MH 12- 1234", "Black");
+
+    pl.parkseat(b1);
+
+
+
+
+
+
+
+</script>
